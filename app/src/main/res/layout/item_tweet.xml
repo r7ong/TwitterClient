@@ -19,7 +19,8 @@
         android:id="@+id/tvName"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/ivProfileImage"
-        android:layout_toEndOf="@+id/ivProfileImage" />
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"

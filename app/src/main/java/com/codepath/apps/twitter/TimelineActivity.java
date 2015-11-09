@@ -1,5 +1,6 @@
 package com.codepath.apps.twitter;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,7 @@ public class TimelineActivity extends AppCompatActivity {
     private ArrayList<Tweet> tweets;
     private TweetsArrayAdapter aTweets;
     private ListView lvTweets;
+    SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,21 @@ public class TimelineActivity extends AppCompatActivity {
         //connect adapter to list view
         lvTweets.setAdapter(aTweets);
 
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                populateTimeline();
+            }
+        });
+
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         //get the client
         client = TwitterApplication.getRestClient();
         populateTimeline();
@@ -50,11 +67,13 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
                 Log.d("in-- DEBUG", json.toString());
+                aTweets.clear();
                 // json here
                 // deserialize json
                 // create model and add them to the adapter
                 // load the model data into listview
                 aTweets.addAll(Tweet.fromJSONArray(json));
+                swipeContainer.setRefreshing(false);
             }
 
             // failure
