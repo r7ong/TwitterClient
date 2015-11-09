@@ -6,6 +6,9 @@ import org.json.JSONObject;
 public class User {
     //list attr
     private String name;
+    private long uid;
+    private String screenNme;
+    private String profileImageUrl;
 
     public String getName() {
         return name;
@@ -22,10 +25,6 @@ public class User {
     public String getProfileImageUrl() {
         return profileImageUrl;
     }
-
-    private long uid;
-    private String screenNme;
-    private String profileImageUrl;
 
     //deserialize the user json => User
     public static User fromJSON(JSONObject json){
