@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.codepath.apps.twitter.R;
 import com.codepath.apps.twitter.models.Tweet;
@@ -25,6 +26,8 @@ public class TimelineActivity extends AppCompatActivity {
     private TweetsArrayAdapter aTweets;
     private ListView lvTweets;
     SwipeRefreshLayout swipeContainer;
+    private long lowId = 0;
+    private long lastlowId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +57,69 @@ public class TimelineActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+        lvTweets.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to your AdapterView
+                Log.d("Debug in-- ref", Integer.toString(page));
+                customLoadMoreDataFromApi(page);
+                // or customLoadMoreDataFromApi(totalItemsCount);
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+            }
+        });
+        
         //get the client
         client = TwitterApplication.getRestClient();
         populateTimeline();
     }
+
+    private void customLoadMoreDataFromApi(int page) {
+        Toast.makeText(this, Integer.toString(page), Toast.LENGTH_SHORT).show();
+        client.getHomeTimeLine(new JsonHttpResponseHandler() {
+            // success
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
+                Log.d("in-- DEBUG", json.toString());
+                // json here
+                // deserialize json
+                // create model and add them to the adapter
+                // load the model data into listview
+                aTweets.addAll(Tweet.fromJSONArray(json));
+                lastlowId = aTweets.getItem(json.length() - 1).getUid();
+                swipeContainer.setRefreshing(false);
+            }
+
+            // failure
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("in--f DEBUG", errorResponse.toString());
+            }
+        }, lowId);
+        lowId = lastlowId;
+        /*
+        String searchUrl = buildSearchUrl();
+        if(offset > 0){
+            String start = Integer.toString(offset * 8);
+            searchUrl = searchUrl + "&start=" + start;
+        }
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(searchUrl, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                JSONArray imageResultsJson = null;
+                try {
+                    imageResultsJson = response.getJSONObject("responseData").getJSONArray("results");
+                    aImageResults.addAll(ImageResult.fromJSONArray(imageResultsJson));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+         */
+    }
+
 
     // send an api request to get the timeline json
     // fill the listview by creating the tweet objects from the json
@@ -73,6 +135,8 @@ public class TimelineActivity extends AppCompatActivity {
                 // create model and add them to the adapter
                 // load the model data into listview
                 aTweets.addAll(Tweet.fromJSONArray(json));
+                lastlowId = aTweets.getItem(json.length()-1).getUid();
+
                 swipeContainer.setRefreshing(false);
             }
 
@@ -81,7 +145,8 @@ public class TimelineActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.d("in--f DEBUG", errorResponse.toString());
             }
-        });
+        }, lowId);
+        lowId = lastlowId;
 
     }
 

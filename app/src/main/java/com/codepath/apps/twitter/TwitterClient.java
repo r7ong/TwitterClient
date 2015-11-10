@@ -4,6 +4,7 @@ import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -27,6 +28,7 @@ public class TwitterClient extends OAuthBaseClient {
 	public static final String REST_CONSUMER_KEY = "nftikCjXGBTv1d1WeiAWnagRG";       // Change this
 	public static final String REST_CONSUMER_SECRET = "toTFrWMZppYgjdrskI9GoPr8Xm7CbpyHzeJVwZiBuzNEnlYiO0"; // Change this
 	public static final String REST_CALLBACK_URL = "oauth://cptwitter"; // Change this (here and in manifest)
+	public static final int PAGE_SIZE = 5;
 
 	public TwitterClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
@@ -55,12 +57,18 @@ public class TwitterClient extends OAuthBaseClient {
 		]
 	 */
 
-	public void getHomeTimeLine(AsyncHttpResponseHandler handler) {
+	public void getHomeTimeLine(AsyncHttpResponseHandler handler, long page) {
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		// specify the params
 		RequestParams params = new RequestParams();
-		params.put("count", 25);
-		params.put("since_id", 1);
+		params.put("count", PAGE_SIZE);
+//		params.put("since_id", 1);
+		Log.d("in-- page", Long.toString(page));
+		if (page != 0) {
+			params.put("max_id", page);
+		}
+
+//		params.put("max_id", page * PAGE_SIZE + 1);
 		// execute the request
 		getClient().get(apiUrl, params, handler);
 
