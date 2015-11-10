@@ -97,7 +97,7 @@ public class Tweet {
         try {
             tweet.body = jsonObject.getString("text");
             tweet.uid = jsonObject.getLong("id");
-            Log.d("in-- uid", Long.toString(tweet.uid));
+//            Log.d("in-- uid", Long.toString(tweet.uid));
             if(tweet.uid < TimelineActivity.lastlowId){
                 TimelineActivity.lastlowId = tweet.uid;
             }

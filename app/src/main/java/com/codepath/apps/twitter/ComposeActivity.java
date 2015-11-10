@@ -1,6 +1,8 @@
 package com.codepath.apps.twitter;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -28,7 +30,7 @@ public class ComposeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
-
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#50ABF1")));
         ivCmpProfileImage = (ImageView) findViewById(R.id.ivCmpProfileImage);
         etCompose = (EditText) findViewById(R.id.etCompose);
         tvCmpName = (TextView) findViewById(R.id.tvCmpName);

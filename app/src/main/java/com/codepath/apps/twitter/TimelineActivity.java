@@ -1,6 +1,8 @@
 package com.codepath.apps.twitter;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,7 +33,6 @@ public class TimelineActivity extends AppCompatActivity {
     private TweetsArrayAdapter aTweets;
     private ListView lvTweets;
     SwipeRefreshLayout swipeContainer;
-    private long lowId = Long.MAX_VALUE;
     public static long lastlowId = Long.MAX_VALUE;
     final int REQUEST_CODE = 90;
 
@@ -39,6 +40,7 @@ public class TimelineActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#50ABF1")));
         //find listview
         lvTweets = (ListView) findViewById(R.id.lvTweets);
         //create the arraylist(data source)
@@ -53,6 +55,7 @@ public class TimelineActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                lastlowId = Long.MAX_VALUE;
                 populateTimeline();
             }
         });
@@ -81,7 +84,7 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     private void customLoadMoreDataFromApi(int page) {
-        Toast.makeText(this, Integer.toString(page), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, Integer.toString(page), Toast.LENGTH_SHORT).show();
         client.getHomeTimeLine(new JsonHttpResponseHandler() {
             // success
             @Override
@@ -102,7 +105,6 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.d("in--f DEBUG", errorResponse.toString());
             }
         }, lastlowId);
-        lowId = lastlowId;
         /*
         String searchUrl = buildSearchUrl();
         if(offset > 0){
@@ -152,8 +154,6 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.d("in--f DEBUG", errorResponse.toString());
             }
         }, lastlowId);
-        lowId = lastlowId;
-
     }
 
     @Override
@@ -165,10 +165,10 @@ public class TimelineActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Toast.makeText(TimelineActivity.this, "onActivityResult", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(TimelineActivity.this, "onActivityResult", Toast.LENGTH_SHORT).show();
         if(requestCode == REQUEST_CODE && resultCode == RESULT_OK){
             String newTweet = data.getStringExtra("newTweet");
-            Toast.makeText(TimelineActivity.this, newTweet, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(TimelineActivity.this, newTweet, Toast.LENGTH_SHORT).show();
 
             Calendar c = Calendar.getInstance();
             SimpleDateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy");
@@ -194,12 +194,8 @@ public class TimelineActivity extends AppCompatActivity {
 //        }
 
         if(id == R.id.mnuCompose){
-//            Toast.makeText(MainActivity.this, "onOptionsItemSelected", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(TimelineActivity.this, ComposeActivity.class); //to start new activity, only need this line and startActivity(intent);
-//            intent.putExtra("age", 26); // usually put keys in strings file
 
-            //start request activity
-//            startActivity(intent);
             startActivityForResult(intent, REQUEST_CODE);
         }
 
