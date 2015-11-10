@@ -31,8 +31,8 @@ public class TimelineActivity extends AppCompatActivity {
     private TweetsArrayAdapter aTweets;
     private ListView lvTweets;
     SwipeRefreshLayout swipeContainer;
-    private long lowId = 0;
-    private long lastlowId = 0;
+    private long lowId = Long.MAX_VALUE;
+    public static long lastlowId = Long.MAX_VALUE;
     final int REQUEST_CODE = 90;
 
     @Override
@@ -68,7 +68,7 @@ public class TimelineActivity extends AppCompatActivity {
             public boolean onLoadMore(int page, int totalItemsCount) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to your AdapterView
-                Log.d("Debug in-- ref", Integer.toString(page));
+//                Log.d("Debug in-- page", Integer.toString(page));
                 customLoadMoreDataFromApi(page);
                 // or customLoadMoreDataFromApi(totalItemsCount);
                 return true; // ONLY if more data is actually being loaded; false otherwise.
@@ -86,13 +86,13 @@ public class TimelineActivity extends AppCompatActivity {
             // success
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
-                Log.d("in-- DEBUG", json.toString());
+//                Log.d("in-- DEBUG", json.toString());
                 // json here
                 // deserialize json
                 // create model and add them to the adapter
                 // load the model data into listview
                 aTweets.addAll(Tweet.fromJSONArray(json));
-                lastlowId = aTweets.getItem(json.length() - 1).getUid();
+//                lastlowId = aTweets.getItem(json.length() - 1).getUid();
                 swipeContainer.setRefreshing(false);
             }
 
@@ -101,7 +101,7 @@ public class TimelineActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.d("in--f DEBUG", errorResponse.toString());
             }
-        }, lowId);
+        }, lastlowId);
         lowId = lastlowId;
         /*
         String searchUrl = buildSearchUrl();
@@ -134,14 +134,14 @@ public class TimelineActivity extends AppCompatActivity {
             // success
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
-                Log.d("in-- DEBUG", json.toString());
+//                Log.d("in-- DEBUG", json.toString());
                 aTweets.clear();
                 // json here
                 // deserialize json
                 // create model and add them to the adapter
                 // load the model data into listview
                 aTweets.addAll(Tweet.fromJSONArray(json));
-                lastlowId = aTweets.getItem(json.length()-1).getUid();
+//                lastlowId = aTweets.getItem(json.length()-1).getUid();
 
                 swipeContainer.setRefreshing(false);
             }
@@ -151,7 +151,7 @@ public class TimelineActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.d("in--f DEBUG", errorResponse.toString());
             }
-        }, lowId);
+        }, lastlowId);
         lowId = lastlowId;
 
     }
@@ -196,7 +196,7 @@ public class TimelineActivity extends AppCompatActivity {
         if(id == R.id.mnuCompose){
 //            Toast.makeText(MainActivity.this, "onOptionsItemSelected", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(TimelineActivity.this, ComposeActivity.class); //to start new activity, only need this line and startActivity(intent);
-            intent.putExtra("age", 26); // usually put keys in strings file
+//            intent.putExtra("age", 26); // usually put keys in strings file
 
             //start request activity
 //            startActivity(intent);

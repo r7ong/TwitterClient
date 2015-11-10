@@ -46,6 +46,8 @@ package com.codepath.apps.twitter.models;
 
 import android.util.Log;
 
+import com.codepath.apps.twitter.TimelineActivity;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,6 +98,9 @@ public class Tweet {
             tweet.body = jsonObject.getString("text");
             tweet.uid = jsonObject.getLong("id");
             Log.d("in-- uid", Long.toString(tweet.uid));
+            if(tweet.uid < TimelineActivity.lastlowId){
+                TimelineActivity.lastlowId = tweet.uid;
+            }
             tweet.createdAt = jsonObject.getString("created_at");
             tweet.user = User.fromJSON(jsonObject.getJSONObject("user"));
 
