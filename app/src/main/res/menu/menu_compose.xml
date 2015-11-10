@@ -1,12 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.codepath.apps.twitter.TimelineActivity">
+    tools:context="com.codepath.apps.twitter.ComposeActivity">
     <item
-        android:id="@+id/mnuCompose"
+        android:id="@+id/mnuTweet"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        android:icon="@drawable/ic_compose"
+        android:title="@string/action_tweet"
         app:showAsAction="always" />
-
 </menu>

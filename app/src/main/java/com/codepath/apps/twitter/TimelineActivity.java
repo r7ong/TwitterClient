@@ -1,5 +1,6 @@
 package com.codepath.apps.twitter;
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,13 +12,17 @@ import android.widget.Toast;
 
 import com.codepath.apps.twitter.R;
 import com.codepath.apps.twitter.models.Tweet;
+import com.codepath.apps.twitter.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class TimelineActivity extends AppCompatActivity {
 
@@ -28,6 +33,7 @@ public class TimelineActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeContainer;
     private long lowId = 0;
     private long lastlowId = 0;
+    final int REQUEST_CODE = 90;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +164,24 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Toast.makeText(TimelineActivity.this, "onActivityResult", Toast.LENGTH_SHORT).show();
+        if(requestCode == REQUEST_CODE && resultCode == RESULT_OK){
+            String newTweet = data.getStringExtra("newTweet");
+            Toast.makeText(TimelineActivity.this, newTweet, Toast.LENGTH_SHORT).show();
+
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy");
+            String formattedDate = df.format(c.getTime());
+
+            String imgUrl = "https://pbs.twimg.com/profile_images/558541794829299712/WrO1V1wl.jpeg";
+            Tweet tweet = new Tweet(newTweet, 143895494, new User("桔梗店老板", 143895494, "kikyo0o",imgUrl), formattedDate);
+            tweets.add(0, tweet);
+            aTweets.notifyDataSetChanged();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -165,8 +189,18 @@ public class TimelineActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+
+        if(id == R.id.mnuCompose){
+//            Toast.makeText(MainActivity.this, "onOptionsItemSelected", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(TimelineActivity.this, ComposeActivity.class); //to start new activity, only need this line and startActivity(intent);
+            intent.putExtra("age", 26); // usually put keys in strings file
+
+            //start request activity
+//            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE);
         }
 
         return super.onOptionsItemSelected(item);

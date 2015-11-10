@@ -60,6 +60,17 @@ public class Tweet {
     private User user;
     private String createdAt;
 
+    public Tweet(String body, long uid, User user, String createdAt) {
+        this.body = body;
+        this.uid = uid;
+        this.user = user;
+        this.createdAt = createdAt;
+    }
+
+    public Tweet() {
+
+    }
+
     public String getBody() {
         return body;
     }
